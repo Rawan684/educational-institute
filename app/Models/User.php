@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Modules\Students\Models\Student;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -45,6 +46,11 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
     }
 
     /**

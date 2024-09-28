@@ -4,6 +4,7 @@ namespace Modules\Exams\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,10 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
+
+        Gate::define('is-authenticated', function ($user) {
+            return $user !== null;
+        });
     }
 
     /**

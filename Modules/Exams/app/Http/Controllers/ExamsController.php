@@ -4,62 +4,86 @@ namespace Modules\Exams\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use  Modules\Exams\Models\Exam;
+use  Modules\Exams\Models\Question;
+use  Modules\Exams\Models\Submission;
+use  Modules\Exams\Models\Option;
+use Modules\Students\Models\Student;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\AuthManager;
+use Modules\Exams\Helpers\ExamHelper;
+use App\Models\User;
 
 class ExamsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    protected $auth;
+
+    public function __construct(AuthManager $auth)
     {
-        return view('exams::index');
+        $this->auth = $auth;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function publishExam(Request $request)
     {
-        return view('exams::create');
+        if (!Gate::allows('is-authenticated')) {
+            return response()->json(['message' => 'You are not authenticated'], 401);
+        }
+
+        $exam = Exam::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'duration' => $request->input('duration'),
+            'type' => $request->input('type'),
+            'teacher_id' => auth()->id,
+            'is_online' => true,
+        ]);
+
+        return response()->json(['message' => 'Exam published successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function getExamQuestions(Request $request, Exam $exam)
     {
-        //
+        $questions = ExamHelper::getExamQuestions($exam);
+
+        return response()->json($questions);
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function submitExamAnswers(Request $request, Exam $exam)
     {
-        return view('exams::show');
+        $student = Student::find()->id();
+
+        if (!$exam->forStudent($student->id)->exists()) {
+            return response()->json(['message' => 'You are not enrolled in this exam'], 403);
+        }
+
+        $submission = Submission::create([
+            'exam_id' => $exam->id,
+            'student_id' => $student->id,
+        ]);
+
+        foreach ($request->input('answers') as $answer) {
+            $question = Question::find($answer['question_id']);
+
+            $option = Option::find($answer['option_id']);
+
+            $submission->answers()->create([
+                'question_id' => $question->id,
+                'option_id' => $option->id,
+            ]);
+        }
+
+        return response()->json(['message' => 'Exam answers submitted successfully']);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function getExamResults(Request $request, Exam $exam)
     {
-        return view('exams::edit');
-    }
+        $student = Student::find()->id();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $results = ExamHelper::getExamResults($exam, $student->id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json($results);
     }
 }

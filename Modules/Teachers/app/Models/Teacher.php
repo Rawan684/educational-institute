@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Classes\Models\Grade;
 use Modules\Classes\Models\Resource;
 use Modules\Classes\Models\Subject;
+use App\Models\User;
 // use Modules\Teachers\Database\Factories\TeacherFactory;
 
 class Teacher extends Model
@@ -27,6 +28,12 @@ class Teacher extends Model
     {
         return $this->belongsToMany(Grade::class);
     }
+
+    public function user()
+    {
+        return $this->belongTo(User::class);
+    }
+
     public function resources()
     {
         return $this->belongsToMany(Resource::class)

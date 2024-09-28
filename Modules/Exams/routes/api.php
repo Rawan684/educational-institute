@@ -17,3 +17,11 @@ use Modules\Exams\Http\Controllers\ExamsController;
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     Route::apiResource('exams', ExamsController::class)->names('exams');
 });
+
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('/exams', [ExamsController::class, 'publishExam']);
+    Route::get('/exams/{exam}/questions', [ExamsController::class, 'getExamQuestions']);
+    Route::post('/exams/{exam}/submit', [ExamsController::class, 'submitExamAnswers']);
+    Route::get('/exams/{exam}/results', [ExamsController::class, 'getExamResults']);
+});
