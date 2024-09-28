@@ -1,0 +1,7 @@
+@extends('exams::layouts.master')
+
+@section('content')
+    <h1>Hello World</h1>
+
+    <p>Module: {!! config('exams.name') !!}</p>
+@endsection
