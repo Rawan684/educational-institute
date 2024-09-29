@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Exams\Http\Controllers\ExamsController;
+use Modules\Exams\Http\Controllers\AssignmentController;
+use Modules\Exams\Http\Controllers\EvaluationController;
 
 /*
  *--------------------------------------------------------------------------
@@ -25,3 +27,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/exams/{exam}/submit', [ExamsController::class, 'submitExamAnswers']);
     Route::get('/exams/{exam}/results', [ExamsController::class, 'getExamResults']);
 });
+
+Route::apiResource('assignments', AssignmentController::class);
+
+Route::get('assignments/{id}/download', [AssignmentController::class, 'download']);
+Route::post('assignments/{id}/upload', [AssignmentController::class, 'upload']);
+
+
+Route::get('/evaluations', [EvaluationController::class, 'index']);
+Route::get('/evaluations/{$id}', [EvaluationController::class, 'show']);
