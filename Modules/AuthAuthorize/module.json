@@ -1,0 +1,14 @@
+{
+    "name": "AuthAuthorize",
+    "alias": "authauthorize",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AuthAuthorize\\Providers\\AuthAuthorizeServiceProvider"
+    ],
+    "files": [],
+    "models": [
+        "Modules\\AuthAuthorize\\Models\\User"
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/authauthorize",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\AuthAuthorize\\": "app/",
+            "Modules\\AuthAuthorize\\Database\\Factories\\": "database/factories/",
+            "Modules\\AuthAuthorize\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\AuthAuthorize\\Tests\\": "tests/"
+        }
+    }
+}
