@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modules\AuthAuthorize\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use  Modules\AuthAuthorize\Http\Requests\StoreUserRequest;
+use Modules\AuthAuthorize\Traits\HttpResponses;
+use Modules\AuthAuthorize\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Cache;
-use App\Notifications\EmailVerificationNotification;
-use App\Traits\HttpResponses;
+use  Modules\AuthAuthorize\Notifications\EmailVerificationNotification;
 use Illuminate\Support\Str;
-use App\Models\User;
 
-class registerController extends Controller
+class RegisterController extends Controller
 {
     use HttpResponses;
 

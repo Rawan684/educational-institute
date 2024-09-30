@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modules\AuthAuthorize\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Requests\LoginUserRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\HttpResponses;
-use App\Models\User;
-
+use Modules\AuthAuthorize\Traits\HttpResponses;
+use Modules\AuthAuthorize\Models\User;
+use Illuminate\Http\Request;
+use Modules\AuthAuthorize\Http\Requests\LoginUserRequest;
 
 class LoginController extends Controller
 {
@@ -33,20 +32,6 @@ class LoginController extends Controller
             'token' => $token
         ]);
     }
-    public function resendTwoFactorCode(Request $request)
-    {
-
-        $user = User::where('email', $request->email)->first();
-        if (!$user->two_factor_code) {
-            return response()->json(['error' => 'Two-factor authentication not enabled'], 400);
-        }
-        // Send 2FA code
-        $user->generateTwoFactorCode();
-
-        return response()->json(['message' => '2FA code resent successfully'], 200);
-    }
-
-
     public function confirmTwoFactorCode(Request $request)
     {
         $user = User::where('email', $request->input('email'))->first();
@@ -60,6 +45,18 @@ class LoginController extends Controller
         }
 
         return response()->json(['error' => 'Invalid verification code'], 422);
+    }
+    public function resendTwoFactorCode(Request $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user->two_factor_code) {
+            return response()->json(['error' => 'Two-factor authentication not enabled'], 400);
+        }
+        // Send 2FA code
+        $user->generateTwoFactorCode();
+
+        return response()->json(['message' => '2FA code resent successfully'], 200);
     }
 
     public function refreshToken(Request $request)

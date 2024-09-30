@@ -5,7 +5,9 @@
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\AuthAuthorize\\Providers\\AuthAuthorizeServiceProvider"
+        "Modules\\AuthAuthorize\\Providers\\AuthAuthorizeServiceProvider",
+        "Laravel\\Sanctum\\SanctumServiceProvider",
+        "Spatie\\Permission\\PermissionServiceProvider"
     ],
     "files": [],
     "models": [
