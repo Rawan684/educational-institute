@@ -5,6 +5,7 @@ namespace Modules\AuthAuthorize\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\AuthAuthorize\Enums\UserType;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Students\Models\Student;
@@ -58,7 +59,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(Teacher::class);
     }
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -79,6 +79,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserType::class,
         ];
     }
 }
