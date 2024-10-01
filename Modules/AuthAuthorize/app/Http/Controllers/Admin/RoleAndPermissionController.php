@@ -4,6 +4,7 @@ namespace Modules\AuthAuthorize\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Modules\AuthAuthorize\Traits\HttpResponses;
+use Modules\AuthAuthorize\Http\Requests\Admin\RoleStoreRequest;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -17,7 +18,10 @@ class RoleAndPermissionController extends Controller
      */
     public function index()
     {
-        return view('authauthorize::index');
+        $role = Role::all();
+        return $this->success([
+            'role' => $role
+        ], 200);
     }
 
     /**
@@ -25,17 +29,21 @@ class RoleAndPermissionController extends Controller
      */
     public function create()
     {
-        return view('authauthorize::create');
+        $permissions = Permission::all();
+        return $this->success([
+            'permission' => $permissions
+        ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RoleStoreRequest $request)
     {
+        $data = $request->validated();
         $role = Role::create(['name' => $request->role, 'guard_name' => 'web'])->givePermissionTo($request->permission);
         return $this->success([
-            'role' => $role
+            'data' => $role
         ], 201);
     }
 
@@ -52,7 +60,14 @@ class RoleAndPermissionController extends Controller
      */
     public function edit($id)
     {
-        return view('authauthorize::edit');
+        $role = Role::find($id);
+        $role_permissions = $role->permissions;
+        $permissions = Permission::all();
+        return $this->success([
+            'data' => $role,
+            'role_permission' =>  $role_permissions,
+            'permissions' =>  $permissions
+        ], 200);
     }
 
     /**
@@ -60,7 +75,15 @@ class RoleAndPermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $role = Role::find($id);
+        $permissions = $role->permissions;
+        $role->revokePermissionTo($permissions);
+        $role->givePermissionTo($request->permissions);
+        $role->update(['name' => $request->role]);
+        $role = $role->refresh();
+        return $this->success([
+            'data' => $role
+        ], 200);
     }
 
     /**
@@ -68,6 +91,12 @@ class RoleAndPermissionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $role = Role::find($id);
+        $permissions = $role->permissions;
+        $role->revokePermissionTo($permissions);
+        $role->delete();
+        return $this->success([
+            'data' => $role
+        ], 200);
     }
 }
